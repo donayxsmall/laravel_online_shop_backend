@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {
@@ -15,25 +16,7 @@ class ProductController extends Controller
                 return $query->where('category_id',$request->category_id);
             })->paginate(10);
 
-            // $response = [
-            //     'status' => 'success',
-            //     'message' => 'Data Found',
-            //     'current_page' => $products->currentPage(),
-            //     'product' => $products->items(),
-            //     'first_page_url' => $products->url(1),
-            //     'from' => $products->firstItem(),
-            //     'last_page' => $products->lastPage(),
-            //     'last_page_url' => $products->url($products->lastPage()),
-            //     'links' => $products->links(),
-            //     'next_page_url' => $products->nextPageUrl(),
-            //     'path' => $products->url($products->currentPage()),
-            //     'per_page' => $products->perPage(),
-            //     'prev_page_url' => $products->previousPageUrl(),
-            //     'to' => $products->lastItem(),
-            //     'total' => $products->total(),
-            // ];
-
-            // return response()->json($response);
+            $products = ProductResource::collection($products);
 
             return ApiResponse::successPagination('Data Found',$products , 'product');
         } catch (\Exception $e) {

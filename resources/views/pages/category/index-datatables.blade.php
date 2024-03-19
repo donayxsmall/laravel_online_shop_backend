@@ -75,6 +75,9 @@
                     'attr': 'name',
                 },
                 {
+                    'attr': 'image',
+                },
+                {
                     'attr': 'description',
                 },
                 {

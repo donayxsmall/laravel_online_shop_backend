@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\category\UpdateCategoryRequest;
 use App\Http\Requests\category\StoreCategoryRequest;
 use App\Helpers\ResponseHelper;
+use Illuminate\Support\Facades\Storage;
 use DataTables;
 
 class CategoryController extends Controller
@@ -37,12 +38,21 @@ class CategoryController extends Controller
                 // ->addColumn('updated_at', function($row) {
                 //     return $row->updated_at != null ? date('Y-m-d H:i:s', strtotime($row->updated_at)) : "";
                 // })
+                ->addColumn('image', function ($category) {
+                    if($category->image != ""){
+                        $imageView = '<img src="' . asset('storage/' . $category->image) . '" width="100" height="100" class="gallery-item" />';
+                    }else{
+                        $imageView = '';
+                    }
+
+                    return $imageView;
+                })
                 ->addColumn('action', function($row) {
                     $actionBtn = '<a href="javascript:void(0)" data-id="'.$row->id.'" class="edit btn btn-info btn-icon btn-sm m-1"><i class="fas fa-edit"></i> Edit</a> <a href="javascript:void(0)" data-id="'.$row->id.'" class="delete btn btn-danger btn-icon btn-sm m-1"><i class="fas fa-times"></i> Delete</a>'
                     ;
                     return $actionBtn;
                 })
-                // ->rawColumns(['action'])
+                ->rawColumns(['image','action'])
                 ->toJson();
         }
 
@@ -59,6 +69,7 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request){
         try {
             $data = $request->all();
+            if ($request->hasFile('image')) $data['image'] = $request->image->store('assets/category','public');
             Category::create($data);
             return  redirect()->route('category.index')->with('success', 'Category succesfully created');
         } catch (\Exception $e) {
@@ -76,6 +87,13 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request , Category $category){
         try {
             $data = $request->all();
+            // dd($data);
+            if ($request->hasFile('image')) {
+                // Hapus gambar lama jika ada
+                Storage::delete('public/'.$category->image);
+
+                $data['image'] = $request->image->store('assets/category','public');
+            }
             $category->update($data);
             return redirect()->route('category.index')->with('success', 'Category successfully updated');
         } catch (\Exception $e) {
@@ -85,6 +103,9 @@ class CategoryController extends Controller
 
     public function destroy(Category $category){
         try {
+            // Hapus gambar jika ada
+            Storage::delete('public/'.$category->image);
+
             $category->delete();
             // return redirect()->route('category.index')->with('success', 'Category successfully deleted');
             return ResponseHelper::message('success', 'Category successfully deleted');

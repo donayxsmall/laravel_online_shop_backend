@@ -63,6 +63,19 @@
                                         <textarea class="form-control" data-height="150" name="description"></textarea>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label for="image">Photo</label>
+                                        <div id="image-preview" class="image-preview"
+                                            style="background-repeat: no-repeat; background-size: cover;">
+                                            <label for="image-upload" id="image-label">Choose File</label>
+                                            <input type="file" name="image" id="image-upload">
+                                        </div>
+
+                                        @error('image')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
                                     <div class="card-footer text-right">
                                         <button class="btn btn-primary" type="submit">Submit</button>
                                     </div>
@@ -89,7 +102,20 @@
     <script src="{{ asset('library/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('library/selectric/public/jquery.selectric.min.js') }}"></script>
     <script src="{{ asset('library/jquery.pwstrength/jquery.pwstrength.min.js') }}"></script>
+    <script src="{{ asset('library/upload-preview/upload-preview.js') }}"></script>
 
     <!-- Page Specific JS File -->
     <script src="{{ asset('js/page/forms-advanced-forms.js') }}"></script>
+
+    <script>
+        $.uploadPreview({
+            input_field: "#image-upload", // Default: .image-upload
+            preview_box: "#image-preview", // Default: .image-preview
+            label_field: "#image-label", // Default: .image-label
+            label_default: "Choose File", // Default: Choose File
+            label_selected: "Change File", // Default: Change File
+            no_label: false, // Default: false
+            success_callback: null // Default: null
+        });
+    </script>
 @endpush

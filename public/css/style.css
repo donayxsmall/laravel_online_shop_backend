@@ -2465,7 +2465,7 @@ a.bb {
 
 .login-brand {
   margin: 20px 0;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   font-size: 24px;
   text-transform: uppercase;
   letter-spacing: 4px;
@@ -3369,6 +3369,7 @@ body.layout-3 .main-footer {
 }
 
 .main-sidebar .sidebar-brand {
+  margin-top: 10px;
   display: inline-block;
   width: 100%;
   text-align: center;

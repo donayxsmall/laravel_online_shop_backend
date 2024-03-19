@@ -30,6 +30,9 @@ Route::get('/', function () {
         return view('pages.dashboard');
     }else{
         return view('pages.auth.login');
+
+        // echo "sdad";
+        // echo fake()->imageUrl();
     }
 });
 
