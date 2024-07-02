@@ -3,6 +3,7 @@ function initializeDatatable(tableId, ajaxUrl,columns) {
     return $('#' + tableId).DataTable({
         serverSide: true,
         ajax: ajaxUrl,
+        order: [[0, 'desc']],
         columns: columnsFix
     });
 }
@@ -46,7 +47,7 @@ function initializeDatatableEvents(datatable,tableId) {
 
     $('#'+tableId).on('click', '.delete', function() {
         let id = $(this).data("id");
-        console.log(window.location.href);
+        console.log(window.location.href+"/"+id);
         Swal.fire({
             title: 'Delete This User!',
             text: "Are you sure you want to delete this user?",

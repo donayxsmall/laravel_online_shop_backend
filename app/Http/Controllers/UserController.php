@@ -2,37 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseHelper;
+use App\DataTables\UserDataTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\DataTables\UserDataTable;
-use App\Helpers\ResponseHelper;
-use DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
 
-    public function getUser(Request $request){
+    public function getUser(Request $request)
+    {
         $model = User::query();
 
         return DataTables::of($model)
-        ->addIndexColumn()
-        ->addColumn('intro', 'Hi {{$name}}!')
-        ->addColumn('action', function($row) {
-            $actionBtn = '<a href="javascript:void(0)" data-id="'.$row->id.'"  class="edit btn btn-success btn-sm m-1">Edit</a><a href="javascript:void(0)" data-id="'.$row->id.'" class="delete btn btn-danger btn-sm m-1">Delete</a>';
-            return $actionBtn;
-        })
-        ->rawColumns(['action'])
-        ->setRowAttr([
-            'intro' => 'red',
-        ])
-        ->toJson();
+            ->addIndexColumn()
+            ->addColumn('intro', 'Hi {{$name}}!')
+            ->addColumn('action', function ($row) {
+                $actionBtn = '<a href="javascript:void(0)" data-id="' . $row->id . '"  class="edit btn btn-success btn-sm m-1">Edit</a><a href="javascript:void(0)" data-id="' . $row->id . '" class="delete btn btn-danger btn-sm m-1">Delete</a>';
+                return $actionBtn;
+            })
+            ->rawColumns(['action'])
+            ->setRowAttr([
+                'intro' => 'red',
+            ])
+            ->toJson();
     }
 
-    public function indexOld(UserDataTable $dataTable){
+    public function indexOld(UserDataTable $dataTable)
+    {
         // echo "sdas";
         return $dataTable->render('pages.users.index-datatablesNew');
     }
@@ -41,10 +43,11 @@ class UserController extends Controller
 
     // }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
 
-        if($request->ajax()){
+        if ($request->ajax()) {
 
             $data = User::query();
             return DataTables::of($data)
@@ -55,9 +58,8 @@ class UserController extends Controller
                 // ->addColumn('updated_at', function($row) {
                 //     return $row->updated_at != null ? date('Y-m-d H:i:s', strtotime($row->updated_at)) : "";
                 // })
-                ->addColumn('action', function($row) {
-                    $actionBtn = '<a href="javascript:void(0)" data-id="'.$row->id.'" class="edit btn btn-info btn-icon btn-sm m-1"><i class="fas fa-edit"></i> Edit</a> <a href="javascript:void(0)" data-id="'.$row->id.'" class="delete btn btn-danger btn-icon btn-sm m-1"><i class="fas fa-times"></i> Delete</a>'
-                    ;
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '<a href="javascript:void(0)" data-id="' . $row->id . '" class="edit btn btn-info btn-icon btn-sm m-1"><i class="fas fa-edit"></i> Edit</a> <a href="javascript:void(0)" data-id="' . $row->id . '" class="delete btn btn-danger btn-icon btn-sm m-1"><i class="fas fa-times"></i> Delete</a>';
                     return $actionBtn;
                 })
                 // ->rawColumns(['action'])
@@ -69,11 +71,13 @@ class UserController extends Controller
     }
 
 
-    public function create(){
+    public function create()
+    {
         return view('pages.users.create');
     }
 
-    public function store(StoreUserRequest $request){
+    public function store(StoreUserRequest $request)
+    {
         try {
             $data = $request->all();
             $data['password'] = bcrypt($request->password);
@@ -87,19 +91,21 @@ class UserController extends Controller
         }
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $user = User::findOrFail($id);
-        return view('pages.users.edit',compact('user'));
+        return view('pages.users.edit', compact('user'));
     }
 
-    public function update(UpdateUserRequest $request , User $user){
+    public function update(UpdateUserRequest $request, User $user)
+    {
         try {
             $data = $request->all();
 
             //check if password is not empty
-            if($request->input('password')){
+            if ($request->input('password')) {
                 $data['password'] = Hash::make($request->input('password'));
-            }else{
+            } else {
                 //if password is empty, then use the old password
                 $data['password'] = $user->password;
             }
@@ -116,7 +122,8 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(User $user){
+    public function destroy(User $user)
+    {
         try {
             $user->delete();
             // return redirect()->route('user.index')->with('success', 'User successfully deleted');

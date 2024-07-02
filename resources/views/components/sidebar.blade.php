@@ -24,6 +24,17 @@
                 </ul>
             </li>
 
+
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Banner
+                        Slider</span></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="nav-link" href="{{ route('banner-slider.index') }}">All Banner Slider</a>
+                    </li>
+                </ul>
+            </li>
+
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Category</span></a>
                 <ul class="dropdown-menu">
@@ -38,6 +49,15 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a class="nav-link" href="{{ route('product.index') }}">All Product</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Order</span></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="nav-link" href="{{ route('order.index') }}">All Order</a>
                     </li>
                 </ul>
             </li>

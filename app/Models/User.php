@@ -3,11 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -21,14 +22,23 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'google_id',
         'phone',
         'roles',
         'password',
+        'photo',
+        'email_verification_token',
     ];
 
     protected function serializeDate(\DateTimeInterface $date)
     {
         return Carbon::instance($date)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+    }
+
+    public function getPhotoAttribute($value)
+    {
+        return $value != null ? asset(Storage::url($value)) : NULL;
+        // return asset('storage/' . $value);
     }
 
     /**

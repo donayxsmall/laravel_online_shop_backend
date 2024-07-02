@@ -3660,3 +3660,41 @@ body.layout-3 .main-wrapper {
 .img-zoom:hover {
     transform: scale(1.2);
 }
+
+.has-star::after{
+    content: "*";
+    margin-left: 3px;
+    font-weight: normal;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: tomato;
+}
+
+.circular-box {
+    border-radius: 10%;
+    overflow: hidden;
+    width: 80px;
+    height: 80px;
+}
+
+/* .item-card{
+    border : 1px grey solid;
+} */
+
+.item-card {
+    background-color: #fff;
+    border-radius: 10px; /* Mengatur radius sudut */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Mengatur elevasi */
+    padding: 16px; /* Mengatur padding di dalam card */
+    margin: 16px; /* Mengatur margin di luar card */
+    transition: box-shadow 0.3s ease; /* Menambahkan transisi untuk efek hover */
+    border : 1px grey solid;
+}
+
+/* Menambahkan efek hover */
+.item-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-button {
+    cursor: pointer;
+}

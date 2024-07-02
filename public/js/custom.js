@@ -90,3 +90,23 @@ $('ul.sidebar-menu li a').each(function() {
 
 console.log('path : '+location.pathname);
 console.log('url : '+url);
+
+
+var table = document.getElementById("product-details-table");
+
+if(table){
+    table.style.display = "none";
+}
+
+
+function toggleDetails() {
+    var table = document.getElementById("product-details-table");
+    var button = document.getElementById("toggle-button");
+    if (table.style.display === "none") {
+        table.style.display = "table";
+        button.innerHTML = "-";
+    } else {
+        table.style.display = "none";
+        button.innerHTML = "+";
+    }
+}

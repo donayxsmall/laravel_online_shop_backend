@@ -5,31 +5,33 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseHelper;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\product\StoreProductRequest;
 use App\Http\Requests\product\UpdateProductRequest;
-use Illuminate\Support\Facades\Storage;
-use App\Helpers\ResponseHelper;
-use DataTables;
 
 class ProductController extends Controller
 {
 
-    public function indexOld(Request $request){
+    public function indexOld(Request $request)
+    {
         $products = Product::paginate(10);
 
-        $products = Product::when($request->input('name') , function($query,$name) {
-            $query->where('name','like','%' . $name . '%');
+        $products = Product::when($request->input('name'), function ($query, $name) {
+            $query->where('name', 'like', '%' . $name . '%');
         })
-        ->orderBy('id','asc')
-        ->paginate(10);
+            ->orderBy('id', 'asc')
+            ->paginate(10);
 
         // dd($categories);
 
         return view('pages.product.index', compact('products'));
     }
 
-    public function index(Request $request){
-        if($request->ajax()){
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
             // $data = Product::query();
             // $data->select('products.*', 'categories.name as category_name')
             // ->leftJoin('categories', 'products.category_id', '=', 'categories.id');
@@ -37,26 +39,26 @@ class ProductController extends Controller
 
             $products = Product::with('category')->get();
 
+
             return DataTables::of($products)
                 ->addIndexColumn()
-                ->addColumn('category_name', function($product) {
+                ->addColumn('category_name', function ($product) {
                     return $product->category->name;
                 })
                 ->addColumn('image', function ($product) {
-                    if($product->image != ""){
+                    if ($product->image != "") {
                         $imageView = '<img src="' . asset('storage/' . $product->image) . '" width="100" height="100" class="gallery-item" />';
-                    }else{
+                    } else {
                         $imageView = '';
                     }
 
                     return $imageView;
                 })
-                ->addColumn('action', function($row) {
-                    $actionBtn = '<a href="javascript:void(0)" data-id="'.$row->id.'" class="edit btn btn-info btn-icon btn-sm m-1"><i class="fas fa-edit"></i> Edit</a> <a href="javascript:void(0)" data-id="'.$row->id.'" class="delete btn btn-danger btn-icon btn-sm m-1"><i class="fas fa-times"></i> Delete</a>'
-                    ;
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '<a href="javascript:void(0)" data-id="' . $row->id . '" class="edit btn btn-info btn-icon btn-sm m-1"><i class="fas fa-edit"></i> Edit</a> <a href="javascript:void(0)" data-id="' . $row->id . '" class="delete btn btn-danger btn-icon btn-sm m-1"><i class="fas fa-times"></i> Delete</a>';
                     return $actionBtn;
                 })
-                ->rawColumns(['image','action'])
+                ->rawColumns(['image', 'action'])
                 ->toJson();
         }
 
@@ -64,16 +66,22 @@ class ProductController extends Controller
     }
 
 
-    public function create(){
+    public function create()
+    {
         $categories = Category::all();
-        return view('pages.product.create' , compact('categories'));
+
+        // pr($categories->toArray());
+        // exit;
+
+        return view('pages.product.create', compact('categories'));
     }
 
-    public function store(StoreProductRequest $request){
+    public function store(StoreProductRequest $request)
+    {
         try {
             $data = $request->all();
             // $data['is_available'] = '1';
-            if ($request->hasFile('image')) $data['image'] = $request->image->store('assets/product','public');
+            if ($request->hasFile('image')) $data['image'] = $request->image->store('assets/product', 'public');
             Product::create($data);
             return  redirect()->route('product.index')->with('success', 'Product succesfully created');
         } catch (\Exception $e) {
@@ -82,21 +90,23 @@ class ProductController extends Controller
         }
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $product = Product::findOrFail($id);
         $categories = Category::all();
-        return view('pages.product.edit',compact('product','categories'));
+        return view('pages.product.edit', compact('product', 'categories'));
     }
 
-    public function update(UpdateProductRequest $request , Product $product){
+    public function update(UpdateProductRequest $request, Product $product)
+    {
 
         try {
             $data = $request->all();
             if ($request->hasFile('image')) {
                 // Hapus gambar lama jika ada
-                Storage::delete('public/'.$product->image);
+                Storage::delete('public/' . $product->image);
 
-                $data['image'] = $request->image->store('assets/product','public');
+                $data['image'] = $request->image->store('assets/product', 'public');
             }
 
             $product->update($data);
@@ -107,11 +117,12 @@ class ProductController extends Controller
         }
     }
 
-    public function destroy(Product $product){
+    public function destroy(Product $product)
+    {
 
         try {
             // Hapus gambar jika ada
-            Storage::delete('public/'.$product->image);
+            Storage::delete('public/' . $product->image);
 
             $product->delete();
             // return redirect()->route('product.index')->with('success', 'Product successfully deleted');
